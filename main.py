@@ -1,6 +1,14 @@
 from mqsystem import MQSystem
 from xlattacker import XLAttacker
 
+
+def bits_to_hex(bits):
+    byte_list = [bits[i : i + 8] for i in range(0, len(bits), 8)]
+
+    hex_list = [format(int("".join(map(str, byte)), 2), "02x") for byte in byte_list]
+    return " ".join(hex_list)
+
+
 # ==========================================
 # CZĘŚĆ 3: PREZENTACJA (MAIN)
 # ==========================================
@@ -12,7 +20,7 @@ def main():
     print("   Kryptografia Post-Kwantowa w Praktyce")
     print("==================================================\n")
 
-    N = 8
+    N = 16
     M = 30
 
     # 1. Inicjalizacja
@@ -33,6 +41,7 @@ def main():
         ct = mq.encrypt_block(block)
         ciphertexts.append(ct)
         print(f"Blok {i} ('{message[i]}') -> zaszyfrowano do {len(ct)} bitów.")
+        print(f"\t{bits_to_hex(ct)}")
 
     # 4. Deszyfrowanie (Legalne - z kluczem)
     print("\n--- DESZYFROWANIE (Właściciel klucza) ---")
@@ -49,7 +58,7 @@ def main():
     print("==================================================")
 
     hacked_msg = ""
-    DEGREE = 3  # Stopień XL. Dla m=30, n=8, D=2 może nie wystarczyć, D=3 jest pewne.
+    DEGREE = 7  # Stopień XL. Dla m=30, n=8, D=2 może nie wystarczyć, D=3 jest pewne.
 
     for i, ct in enumerate(ciphertexts):
         print(f"\n>>> Atakowanie bloku {i}...")

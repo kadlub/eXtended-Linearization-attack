@@ -257,7 +257,7 @@ class XLAttacker:
     def visualize_attack(self, matrix_before, matrix_after, title):
         """Rysuje macierze przed i po ataku."""
         print(f"  -> [GRAFIKA] Generowanie wykresu: {title}...")
-        plt.figure(figsize=(6, 6))
+        plt.figure(figsize=(6, 10))
 
         # Macierz przed
         # plt.subplot(1, 2, 1)
@@ -268,15 +268,16 @@ class XLAttacker:
 
         # Macierz po
         # plt.subplot(1, 2, 2)
+        plt.grid()
         plt.title("Po Gaussie (Linearization)", fontsize=12)
-        plt.imshow(matrix_after, aspect="auto")
+        plt.imshow(matrix_after, cmap="binary", interpolation="nearest", aspect="auto")
         plt.xlabel("Monomiany (zmienne)")
         plt.ylabel("Równania")
 
         plt.suptitle(title, fontsize=16)
         plt.tight_layout()
 
-        plt.savefig(title)
+        plt.savefig("img/" + title)
         # plt.show()
 
 

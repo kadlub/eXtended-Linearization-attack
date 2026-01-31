@@ -20,7 +20,7 @@ def main():
     print("   Kryptografia Post-Kwantowa w Praktyce")
     print("==================================================\n")
 
-    N = 16
+    N = 8
     M = 30
 
     # 1. Inicjalizacja
@@ -58,7 +58,7 @@ def main():
     print("==================================================")
 
     hacked_msg = ""
-    DEGREE = 7  # Stopień XL. Dla m=30, n=8, D=2 może nie wystarczyć, D=3 jest pewne.
+    DEGREE = 3  # Stopień XL. Dla m=30, n=8, D=2 może nie wystarczyć, D=3 jest pewne.
 
     for i, ct in enumerate(ciphertexts):
         print(f"\n>>> Atakowanie bloku {i}...")

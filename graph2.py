@@ -281,7 +281,7 @@ class XLAttacker:
         plt.show()
 
 
-def run_security_experiment(N, max_m_factor=4):
+def run_security_experiment(N, max_m_factor=6):
     """
     Eksperyment naukowy: Jak liczba równań wpływa na szansę złamania?
     """
@@ -289,7 +289,16 @@ def run_security_experiment(N, max_m_factor=4):
     print("   EKSPERYMENT: Skuteczność Ataku vs Liczba Równań")
     print("==================================================")
 
-    m_values = range(N, N * max_m_factor, 2)
+    m_values = list(range(N, N * max_m_factor, 2))
+
+    m_values.append(98)
+    m_values.append(102)
+    m_values.append(112)
+    m_values.append(130)
+    m_values.append(168)
+    m_values.append(244)
+    m_values.append(394)
+    m_values.append(696)
     success_rates = []
 
     # Próbka testowa
@@ -324,10 +333,10 @@ def run_security_experiment(N, max_m_factor=4):
     plt.ylabel("Czy złamano? (0/1)")
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.axvline(
-        x=N * (N + 1) // 2,
+        x=696,
         color="green",
         linestyle=":",
-        label="Teoretyczny próg (m ~ n^2/2)",
+        label=r"Teoretyczny próg ($m \approx \binom{16}{1} + \binom{16}{2} + \binom{16}{3} = 696$)",
     )
     plt.legend()
     plt.show()

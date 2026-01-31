@@ -251,13 +251,13 @@ class XLAttacker:
                     M[r_idx] ^= M[pivot_row]
 
             pivot_row += 1
-            self.visualize_attack(M_old, M, "krok " + str(j + 1) + ".")
+            self.visualize_attack(M_old, M, f"Iteracja ({j+1}/{cols})")
         return M
 
     def visualize_attack(self, matrix_before, matrix_after, title):
         """Rysuje macierze przed i po ataku."""
         print(f"  -> [GRAFIKA] Generowanie wykresu: {title}...")
-        plt.figure(figsize=(6, 10))
+        plt.figure(figsize=(8, 6))
 
         # Macierz przed
         # plt.subplot(1, 2, 1)
@@ -268,16 +268,17 @@ class XLAttacker:
 
         # Macierz po
         # plt.subplot(1, 2, 2)
-        plt.grid()
-        plt.title("Po Gaussie (Linearization)", fontsize=12)
+        plt.title(title, fontsize=12)
         plt.imshow(matrix_after, cmap="binary", interpolation="nearest", aspect="auto")
+        plt.grid(visible=True, color="black", linewidth=0.5, alpha=0.25, zorder=1)
         plt.xlabel("Monomiany (zmienne)")
         plt.ylabel("Równania")
 
-        plt.suptitle(title, fontsize=16)
+        plt.suptitle("Proces linearyzacji eliminacją Gaussa", fontsize=16)
         plt.tight_layout()
 
-        plt.savefig("img/" + title)
+        plt.savefig("img/" + title.split("/")[0] + ")")
+        plt.close()
         # plt.show()
 
 
@@ -292,8 +293,8 @@ def main():
     print("==================================================\n")
 
     # KONFIGURACJA
-    N = 8
-    M = 16
+    N = 16
+    M = 42
 
     mq = MQSystem(N, M)
     mq.generate_keys()

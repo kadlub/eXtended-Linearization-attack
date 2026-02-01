@@ -1,10 +1,6 @@
 from itertools import combinations
 import numpy as np
 
-# ==========================================
-# CZĘŚĆ 2: IMPLEMENTACJA ATAKU XL
-# ==========================================
-
 
 class XLAttacker:
     def __init__(self, mq_system):
@@ -42,7 +38,7 @@ class XLAttacker:
             base_eq_monos = []  # Lista par (monomian, wartość=1)
 
             for r in range(self.n):
-                for c in range(r, self.n):  # Górna trójkątna
+                for c in range(r, self.n):
                     val = self.sys.pub_gamma[eq_idx, r, c]
                     if r != c:
                         val ^= self.sys.pub_gamma[eq_idx, c, r]
@@ -58,7 +54,7 @@ class XLAttacker:
 
             constant = (self.sys.pub_alpha[eq_idx] + ciphertext[eq_idx]) % 2
 
-            mult_monos = [()]  # Pusty = mnożenie przez 1 (oryginalne równanie)
+            mult_monos = [()]
             if D > 2:
                 mult_monos += self.generate_monomials(D - 2)
 
@@ -68,13 +64,13 @@ class XLAttacker:
                 for term in base_eq_monos:
                     new_term = self.multiply_monomial(term, mult_m)
                     if new_term in mono_to_col:
-                        row[mono_to_col[new_term]] ^= 1  # Dodajemy modulo 2
+                        row[mono_to_col[new_term]] ^= 1
 
                 if constant == 1:
                     if mult_m == ():
-                        row[-1] ^= 1  # Stała ląduje w kolumnie wyników
+                        row[-1] ^= 1
                     else:
-                        row[mono_to_col[mult_m]] ^= 1  # Ląduje w macierzy jako monomian
+                        row[mono_to_col[mult_m]] ^= 1
 
                 rows.append(row)
 
@@ -92,12 +88,10 @@ class XLAttacker:
         res_bits = np.zeros(self.n, dtype=np.int8)
         solved_count = 0
 
-        # Szukamy wierszy, które mają "jedynkę" tylko przy zmiennej liniowej x_i
         for row in solved_matrix:
             ones = np.where(row[:-1] == 1)[0]
             if len(ones) == 1:
                 idx = ones[0]
-                # Sprawdzamy czy ten indeks odpowiada zmiennej x_i (monomian długości 1)
                 mono = all_monos[idx]
                 if len(mono) == 1:
                     var_idx = mono[0]
@@ -137,7 +131,7 @@ class XLAttacker:
             others = np.where(M[:, j] == 1)[0]
             for r_idx in others:
                 if r_idx != pivot_row:
-                    M[r_idx] ^= M[pivot_row]  # XOR (dodawanie w GF2)
+                    M[r_idx] ^= M[pivot_row]
 
             pivot_row += 1
         return M

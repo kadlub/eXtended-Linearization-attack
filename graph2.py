@@ -1,11 +1,7 @@
 import numpy as np
 from itertools import combinations
 import sys
-import matplotlib.pyplot as plt  # Dodano do wizualizacji
-
-# ==========================================
-# CZĘŚĆ 1: SYSTEM KRYPTOGRAFICZNY MQ
-# ==========================================
+import matplotlib.pyplot as plt
 
 
 class MQSystem:
@@ -26,7 +22,6 @@ class MQSystem:
         Tutaj, dla celów edukacyjnych ataku XL, generujemy losowy układ.
         """
         # print("[SYSTEM] Generowanie kluczy...")
-        # Klucz publiczny: P(x) = xGx + Bx + a
         # Gamma: część kwadratowa (m x n x n)
         self.pub_gamma = np.random.randint(
             0, 2, (self.m, self.n, self.n), dtype=np.int8
@@ -40,7 +35,6 @@ class MQSystem:
 
     def encrypt_block(self, bits):
         """Szyfruje jeden blok n-bitowy."""
-        # Wzór: y_k = x * G_k * x^T + B_k * x^T + a_k  (wszystko mod 2)
         ciphertext = np.zeros(self.m, dtype=np.int8)
         for i in range(self.m):
             # Część kwadratowa: x^T * G * x
@@ -88,11 +82,6 @@ class MQSystem:
         return "".join(chars)
 
 
-# ==========================================
-# CZĘŚĆ 2: IMPLEMENTACJA ATAKU XL
-# ==========================================
-
-
 class XLAttacker:
     def __init__(self, mq_system):
         self.sys = mq_system
@@ -127,13 +116,12 @@ class XLAttacker:
 
         rows = []
 
-        # 2. Generowanie równań (Expansion)
+        # 2. Generowanie równań
         if verbose:
             print("  -> Generowanie wierszy macierzy (Expansion)...")
         for eq_idx in range(self.m):
             base_eq_monos = []
 
-            # Gamma
             for r in range(self.n):
                 for c in range(r, self.n):
                     val = self.sys.pub_gamma[eq_idx, r, c]
@@ -142,15 +130,12 @@ class XLAttacker:
                     if val == 1:
                         base_eq_monos.append(tuple(sorted(set((r, c)))))
 
-            # Beta
             for r in range(self.n):
                 if self.sys.pub_beta[eq_idx, r] == 1:
                     base_eq_monos.append((r,))
 
-            # Alpha + Ciphertext
             constant = (self.sys.pub_alpha[eq_idx] + ciphertext[eq_idx]) % 2
 
-            # Expansion
             mult_monos = [()]
             if D > 2:
                 mult_monos += self.generate_monomials(D - 2)
@@ -245,15 +230,12 @@ class XLAttacker:
         """Rysuje macierze z podpisanymi osiami monomianów."""
         print(f"  -> [GRAFIKA] Generowanie wykresu: {title}...")
 
-        # Przygotowanie etykiet dla osi X (np. "x0", "x0x1")
-        # Wyświetlamy tylko co n-tą etykietę, żeby nie zamazać wykresu
         labels = []
         for m in monomials:
             label = "".join([f"x{i}" for i in m])
             labels.append(label)
-        labels.append("C")  # Constant column
+        labels.append("C")
 
-        # Ograniczamy liczbę etykiet do max 20 dla czytelności
         step = max(1, len(labels) // 20)
         tick_indices = list(range(0, len(labels), step))
         tick_labels = [labels[i] for i in tick_indices]
@@ -273,7 +255,6 @@ class XLAttacker:
         plt.title("2. Po Redukcji (Widoczne rozwiązanie)", fontsize=12)
         plt.imshow(matrix_after, cmap="binary", interpolation="nearest", aspect="auto")
         plt.xlabel("Zmienne Liniowe (Rozwiązanie)")
-        # Tutaj najważniejsze są pierwsze kolumny (x0, x1...), więc przybliżmy etykiety
         plt.xticks(tick_indices, tick_labels, rotation=45, ha="right", fontsize=8)
 
         plt.suptitle(title, fontsize=16)
@@ -309,13 +290,11 @@ def run_security_experiment(N, max_m_factor=6):
         print(f"Testowanie dla m={m} równań...", end="")
         sys.stdout.flush()
 
-        # Tworzymy system z m równaniami
         mq = MQSystem(N, m)
         mq.generate_keys()
         ct = mq.encrypt_block(test_bits)
 
         attacker = XLAttacker(mq)
-        # Wyłączamy verbose/visualize dla szybkości
         res = attacker.solve(ct, D=D, visualize=False, verbose=False)
 
         if res is not None and np.array_equal(res, test_bits):
@@ -325,7 +304,6 @@ def run_security_experiment(N, max_m_factor=6):
             print(" [PORAŻKA]")
             success_rates.append(0)
 
-    # Wykres eksperymentu
     plt.figure(figsize=(10, 5))
     plt.plot(m_values, success_rates, marker="o", linestyle="-", color="crimson")
     plt.title(f"Przejście fazowe ataku XL (N={N}, Stopień D={D})")
@@ -342,17 +320,11 @@ def run_security_experiment(N, max_m_factor=6):
     plt.show()
 
 
-# ==========================================
-# CZĘŚĆ 3: PREZENTACJA (MAIN)
-# ==========================================
-
-
 def main():
     print("==================================================")
     print("   DEMO: Kryptografia MQ i Atak XL")
     print("==================================================\n")
 
-    # KONFIGURACJA
     N = 16
     M = 42
 
@@ -382,7 +354,6 @@ def main():
     for i, ct in enumerate(ciphertexts):
         print(f"\n>>> Atakowanie bloku {i}...")
 
-        # Włączamy wizualizację TYLKO dla pierwszego bloku (i=0)
         show_plot = i == 0
 
         recovered_bits = attacker.solve(ct, D=DEGREE, visualize=show_plot)
@@ -397,9 +368,7 @@ def main():
     print("\n==================================================")
     print(f"Złamane hasło: {hacked_msg}")
 
-    # --- URUCHOMIENIE EKSPERYMENTU ---
-    # Odkomentuj poniższą linię, aby zobaczyć wykres zależności sukcesu od m
-    run_security_experiment(N=16)  # Mniejsze N dla szybkości demo
+    run_security_experiment(N=16)
 
 
 if __name__ == "__main__":

@@ -9,11 +9,6 @@ def bits_to_hex(bits):
     return " ".join(hex_list)
 
 
-# ==========================================
-# CZĘŚĆ 3: PREZENTACJA (MAIN)
-# ==========================================
-
-
 def main():
     print("==================================================")
     print("   DEMO: Kryptografia MQ i Atak XL")
@@ -58,11 +53,10 @@ def main():
     print("==================================================")
 
     hacked_msg = ""
-    DEGREE = 3  # Stopień XL. Dla m=30, n=8, D=2 może nie wystarczyć, D=3 jest pewne.
+    DEGREE = 3
 
     for i, ct in enumerate(ciphertexts):
         print(f"\n>>> Atakowanie bloku {i}...")
-        # Hacker widzi tylko: Klucz Publiczny (w obiekcie mq) i Szyfrogram (ct)
         recovered_bits = attacker.solve(ct, D=DEGREE)
 
         if recovered_bits is not None:

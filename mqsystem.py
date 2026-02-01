@@ -1,9 +1,5 @@
 import numpy as np
 
-# ==========================================
-# CZĘŚĆ 1: SYSTEM KRYPTOGRAFICZNY MQ
-# ==========================================
-
 
 class MQSystem:
     def __init__(self, n, m):
